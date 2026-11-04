@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Next.js
+.next/
+out/
+
+# Build files
+dist/
+build/
+
+# Testing and logs
+coverage/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
