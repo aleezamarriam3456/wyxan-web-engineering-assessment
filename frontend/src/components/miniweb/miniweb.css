@@ -1,0 +1,803 @@
+
+/*
+ * File: miniweb.css
+ *
+ * Purpose:
+ * Defines the visual design of the MiniWeb browser workspace.
+ *
+ * Responsibilities:
+ * - Style the application sidebar and browser workspace.
+ * - Establish the purple and lavender visual identity.
+ * - Style navigation controls, address bar and browser content.
+ * - Provide responsive layouts and interaction states.
+ *
+ * Architecture:
+ * These styles belong exclusively to the MiniWeb application.
+ * Global resets, typography defaults and focus indicators are
+ * maintained in the application's global stylesheet.
+ */
+
+/* --------------------------------------------------
+   Application layout
+-------------------------------------------------- */
+
+.miniweb-shell {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  color: #f7f3ff;
+  background:
+    radial-gradient(
+      ellipse at 78% 0%,
+      rgba(117, 74, 194, 0.16),
+      transparent 34%
+    ),
+    #0d0b1b;
+}
+
+/* --------------------------------------------------
+   Sidebar
+-------------------------------------------------- */
+
+.miniweb-sidebar {
+  position: relative;
+  display: flex;
+  flex: 0 0 270px;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 30px 20px 22px;
+  border-right: 1px solid rgba(190, 164, 255, 0.12);
+  background: rgba(18, 14, 37, 0.96);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 5px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 43px;
+  height: 43px;
+  place-items: center;
+  border: 1px solid rgba(216, 193, 255, 0.35);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #a879f5, #7143cf);
+  box-shadow: 0 7px 24px rgba(130, 76, 222, 0.27);
+  color: #fff;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.brand-name {
+  color: #fff;
+  font-size: 21px;
+  font-weight: 750;
+  letter-spacing: -0.8px;
+}
+
+.brand-caption {
+  color: #9286ad;
+  font-size: 10px;
+  letter-spacing: 0.15px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  margin: 29px 0 26px;
+  background: rgba(190, 164, 255, 0.12);
+}
+
+.sidebar-section-label,
+.person-label,
+.eyebrow,
+.content-section-name,
+.trail-label {
+  color: #9486b6;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 1.6px;
+}
+
+.sidebar-section-label {
+  margin: 0 5px 24px;
+}
+
+.person-label {
+  display: block;
+  margin: 0 5px 9px;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+}
+
+.person-select {
+  width: 100%;
+  min-height: 43px;
+  padding: 0 13px;
+  border: 1px solid rgba(185, 153, 255, 0.19);
+  border-radius: 10px;
+  background: #211a3a;
+  color: #f6f0ff;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.person-select:focus {
+  border-color: #a77af3;
+}
+
+.person-select option {
+  background: #211a3a;
+  color: #fff;
+}
+
+/* --------------------------------------------------
+   Sidebar navigation
+-------------------------------------------------- */
+
+.sidebar-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.sidebar-link {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 61px;
+  align-items: center;
+  gap: 13px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #b0a4c8;
+  text-align: left;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.sidebar-link:hover {
+  border-color: rgba(190, 164, 255, 0.12);
+  background: rgba(137, 95, 208, 0.09);
+  color: #fff;
+}
+
+.sidebar-link.active {
+  border-color: rgba(173, 132, 255, 0.2);
+  background: linear-gradient(
+    105deg,
+    rgba(133, 85, 211, 0.24),
+    rgba(105, 69, 166, 0.09)
+  );
+  color: #fff;
+}
+
+.sidebar-link-symbol {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border: 1px solid rgba(190, 164, 255, 0.13);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.035);
+  color: #c8aaff;
+  font-size: 20px;
+}
+
+.sidebar-link.active .sidebar-link-symbol {
+  border-color: rgba(194, 158, 255, 0.25);
+  background: rgba(153, 103, 230, 0.2);
+  color: #e1caff;
+}
+
+.sidebar-link-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-link-title {
+  color: inherit;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.sidebar-link-description {
+  color: #897e9f;
+  font-size: 10px;
+}
+
+.sidebar-active-indicator {
+  position: absolute;
+  top: 17px;
+  right: -1px;
+  width: 3px;
+  height: 25px;
+  border-radius: 5px 0 0 5px;
+  background: #ba91ff;
+  box-shadow: 0 0 12px rgba(186, 145, 255, 0.5);
+}
+
+/* --------------------------------------------------
+   Sidebar footer and sandbox notice
+-------------------------------------------------- */
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+  margin-top: auto;
+  padding-top: 30px;
+}
+
+.sandbox-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 11px;
+  border: 1px solid rgba(116, 207, 169, 0.15);
+  border-radius: 10px;
+  background: rgba(72, 153, 119, 0.065);
+}
+
+.sandbox-indicator,
+.status-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: #69d5a2;
+  box-shadow: 0 0 10px rgba(105, 213, 162, 0.45);
+}
+
+.sandbox-indicator {
+  margin-top: 4px;
+}
+
+.sandbox-title,
+.sandbox-description {
+  display: block;
+}
+
+.sandbox-title {
+  color: #b4e9d0;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.sandbox-description {
+  margin-top: 5px;
+  color: #849b91;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.sidebar-version {
+  color: #675e7b;
+  font-size: 8px;
+  font-weight: 650;
+  letter-spacing: 1.2px;
+  text-align: center;
+}
+
+/* --------------------------------------------------
+   Browser workspace and header
+-------------------------------------------------- */
+
+.browser-workspace {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.browser-header {
+  padding: 30px 38px 0;
+  border-bottom: 1px solid rgba(190, 164, 255, 0.1);
+  background: rgba(18, 14, 37, 0.48);
+}
+
+.browser-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.browser-heading .eyebrow {
+  margin: 0 0 9px;
+}
+
+.browser-heading h1 {
+  margin: 0;
+  color: #fbf8ff;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(23px, 2.3vw, 31px);
+  font-weight: 500;
+  letter-spacing: -0.8px;
+}
+
+.browser-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid rgba(105, 213, 162, 0.16);
+  border-radius: 30px;
+  background: rgba(72, 153, 119, 0.07);
+  color: #a9d8c1;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.browser-status .status-dot {
+  width: 6px;
+  height: 6px;
+}
+
+/* --------------------------------------------------
+   Browser toolbar
+-------------------------------------------------- */
+
+.browser-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.navigation-controls {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 7px;
+}
+
+.toolbar-button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid rgba(190, 164, 255, 0.16);
+  border-radius: 10px;
+  background: #201a36;
+  color: #e8dcff;
+  font-size: 19px;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.toolbar-button:not(:disabled):hover {
+  border-color: rgba(192, 153, 255, 0.5);
+  background: #30234c;
+}
+
+.toolbar-button:disabled {
+  color: #655b79;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.address-form {
+  display: flex;
+  min-width: 0;
+  height: 45px;
+  flex: 1;
+  align-items: center;
+  gap: 11px;
+  padding: 4px 5px 4px 14px;
+  border: 1px solid rgba(186, 153, 255, 0.19);
+  border-radius: 11px;
+  background: #1b1630;
+  transition: border-color 160ms ease;
+}
+
+.address-form:focus-within {
+  border-color: #9f77e7;
+  box-shadow: 0 0 0 3px rgba(153, 108, 221, 0.09);
+}
+
+.address-lock {
+  color: #b899f3;
+  font-size: 19px;
+}
+
+.address-form input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f5efff;
+  font-size: 11px;
+}
+
+.address-form input::placeholder {
+  color: #817695;
+}
+
+.go-button {
+  display: flex;
+  min-width: 65px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #a779ef, #7950cc);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 13px rgba(130, 79, 209, 0.2);
+  transition:
+    filter 160ms ease,
+    transform 160ms ease;
+}
+
+.go-button:hover {
+  filter: brightness(1.12);
+}
+
+.go-button:active {
+  transform: scale(0.97);
+}
+
+/* --------------------------------------------------
+   Navigation trail
+-------------------------------------------------- */
+
+.navigation-trail {
+  display: flex;
+  min-height: 53px;
+  align-items: center;
+  gap: 17px;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.trail-label {
+  flex: 0 0 auto;
+  font-size: 8px;
+}
+
+.trail-empty {
+  overflow: hidden;
+  color: #756b8a;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------
+   Main browser content
+-------------------------------------------------- */
+
+.browser-content {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: 25px 38px 36px;
+}
+
+.content-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 17px;
+}
+
+.content-section-name {
+  font-size: 9px;
+}
+
+.sandbox-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid rgba(105, 213, 162, 0.15);
+  border-radius: 20px;
+  background: rgba(72, 153, 119, 0.07);
+  color: #a6d8be;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 1px;
+}
+
+.sandbox-badge .status-dot {
+  width: 6px;
+  height: 6px;
+}
+
+/* --------------------------------------------------
+   Browser page and empty states
+-------------------------------------------------- */
+
+.browser-page {
+  position: relative;
+  display: flex;
+  min-height: 480px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(190, 164, 255, 0.13);
+  border-radius: 15px;
+  background:
+    radial-gradient(
+      ellipse at 50% 43%,
+      rgba(126, 81, 192, 0.13),
+      transparent 48%
+    ),
+    linear-gradient(145deg, #17132c, #120f24 70%);
+}
+
+.browser-page::before,
+.browser-page::after {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border: 1px solid rgba(186, 153, 255, 0.055);
+  border-radius: 50%;
+  content: '';
+  pointer-events: none;
+}
+
+.browser-page::before {
+  top: -155px;
+  right: -85px;
+}
+
+.browser-page::after {
+  bottom: -175px;
+  left: -105px;
+  width: 290px;
+  height: 290px;
+}
+
+.empty-state {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  max-width: 420px;
+  flex-direction: column;
+  align-items: center;
+  padding: 45px 24px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  margin-bottom: 26px;
+  border: 1px solid rgba(190, 157, 255, 0.23);
+  border-radius: 20px;
+  background: linear-gradient(
+    145deg,
+    rgba(155, 108, 228, 0.24),
+    rgba(91, 62, 150, 0.15)
+  );
+  box-shadow: 0 12px 35px rgba(96, 59, 156, 0.15);
+  color: #d1b5ff;
+  font-size: 31px;
+}
+
+.empty-state .eyebrow {
+  margin: 0 0 13px;
+  color: #b39adf;
+}
+
+.empty-state h2 {
+  margin: 0;
+  color: #f8f3ff;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(22px, 2.2vw, 29px);
+  font-weight: 500;
+  letter-spacing: -0.7px;
+  line-height: 1.35;
+}
+
+.empty-state-description {
+  max-width: 340px;
+  margin: 14px 0 0;
+  color: #a097b5;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* --------------------------------------------------
+   Responsive layouts
+-------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .miniweb-sidebar {
+    flex-basis: 225px;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .browser-header {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  .browser-content {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+}
+
+@media (max-width: 650px) {
+  .miniweb-shell {
+    min-height: 100vh;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .miniweb-sidebar {
+    min-height: auto;
+    flex: none;
+    padding: 16px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(190, 164, 255, 0.12);
+  }
+
+  .brand-mark {
+    width: 37px;
+    height: 37px;
+    font-size: 20px;
+  }
+
+  .brand-name {
+    font-size: 18px;
+  }
+
+  .sidebar-divider,
+  .sidebar-section-label,
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .person-label {
+    margin-top: 17px;
+  }
+
+  .person-select {
+    min-height: 38px;
+  }
+
+  .sidebar-navigation {
+    flex-direction: row;
+    gap: 6px;
+    margin-top: 13px;
+  }
+
+  .sidebar-link {
+    min-height: 42px;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px;
+  }
+
+  .sidebar-link-symbol {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+    font-size: 16px;
+  }
+
+  .sidebar-link-copy {
+    gap: 0;
+  }
+
+  .sidebar-link-title {
+    font-size: 10px;
+  }
+
+  .sidebar-link-description,
+  .sidebar-active-indicator {
+    display: none;
+  }
+
+  .browser-header {
+    padding: 23px 16px 0;
+  }
+
+  .browser-heading {
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+
+  .browser-heading h1 {
+    font-size: 23px;
+  }
+
+  .browser-status {
+    padding: 7px 9px;
+    font-size: 8px;
+  }
+
+  .browser-toolbar {
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .navigation-controls {
+    gap: 5px;
+  }
+
+  .toolbar-button {
+    width: 32px;
+    height: 38px;
+  }
+
+  .address-form {
+    height: 40px;
+    gap: 7px;
+    padding-left: 9px;
+  }
+
+  .address-form input {
+    font-size: 10px;
+  }
+
+  .go-button {
+    min-width: 48px;
+    height: 30px;
+    gap: 4px;
+    font-size: 10px;
+  }
+
+  .navigation-trail {
+    min-height: 45px;
+    gap: 10px;
+  }
+
+  .browser-content {
+    padding: 20px 16px 24px;
+  }
+
+  .browser-page {
+    min-height: 420px;
+  }
+}
+
+@media (max-width: 390px) {
+  .browser-status {
+    display: none;
+  }
+
+  .sidebar-link {
+    flex: 1;
+  }
+
+  .sidebar-link-symbol {
+    display: none;
+  }
+
+  .navigation-controls .toolbar-button {
+    width: 29px;
+  }
+}
