@@ -40,6 +40,17 @@ export class SitesService {
   }
 
   /**
+   * Retrieves all published websites.
+   */
+  async findAll() {
+    return this.siteModel
+      .find()
+      .sort({ title: 1 })
+      .lean()
+      .exec();
+  }
+
+  /**
    * Finds a website using its normalized address.
    */
   async findByAddress(address: string) {
