@@ -1,3 +1,23 @@
+/*
+ * File: MiniWebApp.tsx
+ *
+ * MiniWeb — Full Stack Technical Assessment
+ *
+ * Features:
+ * - Browse published MiniWeb websites.
+ * - Follow internal links and handle broken addresses.
+ * - Back and Forward navigation.
+ * - Restore website scroll positions.
+ * - Maintain independent sessions for each person.
+ * - Per-person browsing history.
+ * - Full-text website search.
+ * - Publish new websites.
+ * - Render untrusted HTML inside a restricted iframe.
+ *
+ * Stack:
+ * Next.js · React · TypeScript · NestJS · MongoDB
+ */
+
 'use client';
 
 import {
@@ -13,7 +33,6 @@ import {
   createSite,
   createVisit,
   getPeople,
-  getSites,
   getSite,
   getVisits,
   searchSites,
@@ -110,6 +129,20 @@ function isValidSession(value: unknown): value is BrowserSession {
 /* Sandboxed website document                                                 */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Creates the document displayed inside the website iframe.
+ *
+ * Security:
+ * - HTML is sanitized by the backend before storage.
+ * - Scripts and external resources are blocked.
+ * - The iframe receives no script permission.
+ * - Its Content Security Policy blocks external requests.
+ * - The parent application handles internal navigation.
+ *
+ * Styling:
+ * - Does not impose a global website colour scheme.
+ * - Allows each published website's own inline styles to display.
+ */
 function createSandboxDocument(html: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -124,247 +157,44 @@ function createSandboxDocument(html: string): string {
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    :root {
-      color-scheme: dark;
-      --page-bg: #0b0713;
-      --page-surface: #151022;
-      --page-border: rgba(183, 148, 255, 0.16);
-      --page-text: #eee7ff;
-      --page-muted: #b4a6ca;
-      --page-purple: #a77aff;
-      --page-lavender: #d0b7ff;
-    }
-
     * {
       box-sizing: border-box;
     }
 
     html {
       min-height: 100%;
-      background: var(--page-bg);
-      color: var(--page-text);
       scroll-behavior: smooth;
-      scrollbar-color: #60418c #100a1d;
     }
 
     body {
       min-height: 100vh;
       max-width: 100%;
       margin: 0;
-      padding: 48px clamp(22px, 7vw, 100px) 80px;
-      overflow-wrap: break-word;
-
-      background:
-        radial-gradient(
-          ellipse at 12% 0%,
-          rgba(111, 65, 175, 0.20),
-          transparent 42%
-        ),
-        radial-gradient(
-          ellipse at 90% 30%,
-          rgba(79, 43, 127, 0.13),
-          transparent 38%
-        ),
-        var(--page-bg);
-
-      color: var(--page-text);
-
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      font-size: 15px;
-      line-height: 1.85;
-    }
-
-    body > * {
-      max-width: 820px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      color: #f3ecff;
-      font-weight: 700;
-      line-height: 1.25;
-      letter-spacing: -0.035em;
-      margin-top: 1.7em;
-      margin-bottom: 0.65em;
-    }
-
-    h1 {
-      margin-top: 0.55em;
-      font-size: clamp(2.2rem, 6vw, 3.8rem);
-      letter-spacing: -0.055em;
-      line-height: 1.08;
-      background: linear-gradient(
-        110deg,
-        #ffffff,
-        #d5baff 65%,
-        #a77aff
-      );
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    h2 {
-      font-size: clamp(1.7rem, 4vw, 2.35rem);
-    }
-
-    h3 {
-      font-size: 1.4rem;
-      color: var(--page-lavender);
-    }
-
-    p {
-      margin: 0 0 1.35em;
-      color: #c8bddb;
-    }
-
-    strong, b {
-      color: #f1eaff;
-      font-weight: 700;
-    }
-
-    small {
-      color: var(--page-muted);
-    }
-
-    a {
-      display: inline;
-      color: var(--page-lavender);
-      font-weight: 600;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(167, 122, 255, 0.45);
-      text-underline-offset: 5px;
-      transition: color 160ms ease, border-color 160ms ease;
-      cursor: pointer;
-    }
-
-    a:hover {
-      color: #ffffff;
-      border-color: #c5a1ff;
-    }
-
-    ul, ol {
-      margin: 0 0 1.5em;
-      padding-left: 1.6em;
-      color: #c8bddb;
-    }
-
-    li {
-      margin: 0.45em 0;
-      padding-left: 0.25em;
-    }
-
-    li::marker {
-      color: var(--page-purple);
-    }
-
-    blockquote {
-      margin: 2em 0;
-      padding: 18px 24px;
-      border-left: 3px solid var(--page-purple);
-      border-radius: 0 12px 12px 0;
-      background: rgba(123, 77, 183, 0.10);
-      color: #d9c9f4;
-    }
-
-    blockquote p:last-child {
-      margin-bottom: 0;
-    }
-
-    hr {
-      height: 1px;
-      margin: 2.5em 0;
-      border: 0;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(183, 148, 255, 0.35),
-        transparent
-      );
-    }
-
-    code, pre {
-      font-family: Consolas, "Courier New", monospace;
-    }
-
-    code {
-      padding: 3px 7px;
-      border: 1px solid var(--page-border);
-      border-radius: 5px;
-      background: var(--page-surface);
-      color: var(--page-lavender);
-    }
-
-    pre {
-      max-width: 100%;
-      overflow-x: auto;
-      padding: 20px;
-      border: 1px solid var(--page-border);
-      border-radius: 12px;
-      background: #100a1b;
-      color: #e6d9ff;
-      white-space: pre-wrap;
-    }
-
-    pre code {
       padding: 0;
-      border: 0;
-      background: transparent;
+      overflow-wrap: break-word;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      line-height: 1.6;
     }
 
-    table {
-      width: 100%;
-      max-width: 100%;
-      margin: 1.5em 0;
-      border-collapse: collapse;
-      color: #d7cce8;
-    }
-
-    th, td {
-      padding: 12px 15px;
-      border: 1px solid var(--page-border);
-      text-align: left;
-    }
-
-    th {
-      background: #1d1430;
-      color: var(--page-lavender);
-    }
-
-    td {
-      background: rgba(23, 16, 39, 0.55);
-    }
-
-    img, iframe, video, audio, object, embed {
+    img,
+    iframe,
+    video,
+    audio,
+    object,
+    embed {
       display: none !important;
     }
 
     @media (max-width: 600px) {
       body {
-        padding: 30px 20px 52px;
-        font-size: 14px;
-      }
-
-      h1 {
-        font-size: 2.25rem;
-      }
-
-      th, td {
-        padding: 9px;
+        max-width: 100%;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
+      *,
+      *::before,
+      *::after {
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
       }
@@ -414,17 +244,8 @@ export default function MiniWebApp() {
   );
 
   const [sessionReady, setSessionReady] = useState(false);
+
   const [sessionOwner, setSessionOwner] = useState('');
-
-  /* ------------------------------------------------------------------------ */
-  /* Published websites                                                       */
-  /* ------------------------------------------------------------------------ */
-
-  const [sites, setSites] = useState<
-    Awaited<ReturnType<typeof getSites>>
-  >([]);
-
-  const [sitesLoading, setSitesLoading] = useState(false);
 
   /* ------------------------------------------------------------------------ */
   /* Interface state                                                          */
@@ -508,57 +329,6 @@ export default function MiniWebApp() {
   }, []);
 
   /* ------------------------------------------------------------------------ */
-  /* Load all published websites                                              */
-  /* ------------------------------------------------------------------------ */
-
-  const refreshSites = useCallback(async () => {
-    setSitesLoading(true);
-
-    try {
-      const availableSites = await getSites();
-      setSites(availableSites);
-    } catch {
-      setNotice(
-        'Unable to load published websites. Check the backend.',
-      );
-    } finally {
-      setSitesLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadPublishedSites() {
-      setSitesLoading(true);
-
-      try {
-        const availableSites = await getSites();
-
-        if (isMounted) {
-          setSites(availableSites);
-        }
-      } catch {
-        if (isMounted) {
-          setNotice(
-            'Unable to load published websites. Check the backend.',
-          );
-        }
-      } finally {
-        if (isMounted) {
-          setSitesLoading(false);
-        }
-      }
-    }
-
-    void loadPublishedSites();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  /* ------------------------------------------------------------------------ */
   /* Restore each person's independent session and history                   */
   /* ------------------------------------------------------------------------ */
 
@@ -593,6 +363,7 @@ export default function MiniWebApp() {
     setSession(restoredSession);
     setSessionOwner(selectedPerson);
     setAddress('');
+
     setSessionReady(true);
 
     async function loadHistory() {
@@ -1002,8 +773,6 @@ export default function MiniWebApp() {
         author: selectedPerson,
       });
 
-      await refreshSites();
-
       setPublishAddress('');
       setPublishTitle('');
       setPublishHtml('');
@@ -1055,7 +824,7 @@ export default function MiniWebApp() {
       : '';
 
   /* ------------------------------------------------------------------------ */
-  /* Search results display                                                   */
+  /* Search results display helper                                             */
   /* ------------------------------------------------------------------------ */
 
   function renderSearchResults(results: SearchResult[]) {
@@ -1104,86 +873,11 @@ export default function MiniWebApp() {
   }
 
   /* ------------------------------------------------------------------------ */
-  /* Published website directory                                              */
-  /* ------------------------------------------------------------------------ */
-
-  function renderWebsiteDirectory() {
-    return (
-      <div className="website-directory">
-        <div className="empty-state">
-          <div className="empty-state-icon">⌘</div>
-
-          <p className="eyebrow">
-            YOUR JOURNEY STARTS HERE
-          </p>
-
-          <h2>Explore the little web.</h2>
-
-          <p className="empty-state-description">
-            Choose a published website below or enter its address
-            above to start exploring MiniWeb.
-          </p>
-        </div>
-
-        <div className="search-results">
-          <p className="eyebrow">
-            THE MINIWEB COLLECTION
-          </p>
-
-          <h2>Published websites</h2>
-
-          {sitesLoading ? (
-            <div className="empty-state">
-              <p>Loading published websites...</p>
-            </div>
-          ) : sites.length === 0 ? (
-            <div className="empty-state">
-              <h3>No websites published yet.</h3>
-
-              <p className="empty-state-description">
-                Published websites will appear here.
-              </p>
-            </div>
-          ) : (
-            <div className="search-result-list">
-              {sites.map((site) => (
-                <article
-                  key={site.address}
-                  className="search-result"
-                >
-                  <button
-                    type="button"
-                    className="search-result-title"
-                    onClick={() =>
-                      void navigateToAddress(site.address, 'typed')
-                    }
-                    disabled={isLoading}
-                  >
-                    {site.title}
-                  </button>
-
-                  <span className="search-result-address">
-                    {site.address}
-                  </span>
-
-                  <p>Published by {site.author}</p>
-                </article>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  /* ------------------------------------------------------------------------ */
   /* Render                                                                   */
   /* ------------------------------------------------------------------------ */
 
   return (
     <main className="miniweb-shell">
-
-      {/* Sidebar */}
 
       <aside className="miniweb-sidebar">
 
@@ -1271,8 +965,6 @@ export default function MiniWebApp() {
           ))}
         </nav>
 
-        {/* Search form */}
-
         {activeSection === 'search' && (
           <form
             className="sidebar-search-form"
@@ -1302,8 +994,6 @@ export default function MiniWebApp() {
           </form>
         )}
 
-        {/* Sandbox information */}
-
         <div className="sidebar-bottom">
           <div className="sandbox-note">
             <span className="sandbox-indicator" />
@@ -1324,8 +1014,6 @@ export default function MiniWebApp() {
           </span>
         </div>
       </aside>
-
-      {/* Main browser workspace */}
 
       <section className="browser-workspace">
 
@@ -1348,8 +1036,6 @@ export default function MiniWebApp() {
                 : 'MiniWeb is ready'}
             </span>
           </div>
-
-          {/* Address bar and navigation controls */}
 
           <div className="browser-toolbar">
 
@@ -1407,8 +1093,6 @@ export default function MiniWebApp() {
           </div>
         </header>
 
-        {/* Browser content */}
-
         <section className="browser-content">
 
           <div className="content-topline">
@@ -1434,8 +1118,6 @@ export default function MiniWebApp() {
 
           <div className="browser-page">
 
-            {/* Status and error messages */}
-
             {notice && (
               <div
                 className="browser-notice"
@@ -1453,8 +1135,6 @@ export default function MiniWebApp() {
               </div>
             )}
 
-            {/* Website browser */}
-
             {activeSection === 'browse' && (
               <>
                 {isLoading && (
@@ -1469,8 +1149,22 @@ export default function MiniWebApp() {
                   </div>
                 )}
 
-                {!isLoading && !currentEntry &&
-                  renderWebsiteDirectory()}
+                {!isLoading && !currentEntry && (
+                  <div className="empty-state">
+                    <div className="empty-state-icon">⌘</div>
+
+                    <p className="eyebrow">
+                      YOUR JOURNEY STARTS HERE
+                    </p>
+
+                    <h2>Explore the little web.</h2>
+
+                    <p className="empty-state-description">
+                      Enter a website address above to start
+                      exploring the websites stored in MiniWeb.
+                    </p>
+                  </div>
+                )}
 
                 {!isLoading &&
                   currentEntry?.kind === 'site' && (
@@ -1544,8 +1238,6 @@ export default function MiniWebApp() {
               </>
             )}
 
-            {/* Per-person browsing history */}
-
             {activeSection === 'history' && (
               <div className="history-panel">
                 <p className="eyebrow">
@@ -1618,8 +1310,6 @@ export default function MiniWebApp() {
               </div>
             )}
 
-            {/* Full-text search */}
-
             {activeSection === 'search' && (
               <div className="search-results">
                 <p className="eyebrow">
@@ -1663,8 +1353,6 @@ export default function MiniWebApp() {
                 )}
               </div>
             )}
-
-            {/* Publish a website */}
 
             {activeSection === 'publish' && (
               <div className="publish-panel">

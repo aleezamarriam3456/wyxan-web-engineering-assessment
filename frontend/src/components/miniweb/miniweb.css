@@ -2117,5 +2117,12 @@ button:disabled:hover {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    .search-result-list,
+.search-result,
+.search-result-title {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
+}
   }
 }
